@@ -1,0 +1,38 @@
+set ZLIB_ROOT=D:\Projects\DepsRoot\zlib\1.2.11
+set ZLIB_LIBRARY=D:\Projects\DepsRoot\zlib\1.2.11\contrib\vstudio\vc14\x64\ZlibStatRelease\zlibstat.lib
+
+set OPENEXR_ROOT_DIR=%~sdp0
+set OPENEXR_INSTALL_DIR=%~sdp0\built\
+
+SET CMAKE_OUTPUT_DIR=ilmbase-compiler\vc14win64-cmake\
+
+IF EXIST %CMAKE_OUTPUT_DIR% rmdir /S /Q %CMAKE_OUTPUT_DIR%
+mkdir %CMAKE_OUTPUT_DIR%
+pushd %CMAKE_OUTPUT_DIR%
+
+cmake ^
+	-D CMAKE_INSTALL_PREFIX=%OPENEXR_INSTALL_DIR% ^
+	-D BUILD_SHARED_LIBS=OFF ^
+	-G "Visual Studio 14 2015" ^
+	-Ax64 ^
+	%OPENEXR_ROOT_DIR%/ilmbase
+popd
+if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
+
+SET CMAKE_OUTPUT_DIR=openexr-compiler\vc14win64-cmake\
+
+IF EXIST %CMAKE_OUTPUT_DIR% rmdir /S /Q %CMAKE_OUTPUT_DIR%
+mkdir %CMAKE_OUTPUT_DIR%
+pushd %CMAKE_OUTPUT_DIR%
+
+cmake ^
+	-D CMAKE_INSTALL_PREFIX=%OPENEXR_INSTALL_DIR% ^
+	-D ILMBASE_PACKAGE_PREFIX=%OPENEXR_INSTALL_DIR% ^
+	-D BUILD_SHARED_LIBS=OFF ^
+	-D ZLIB_ROOT=%ZLIB_ROOT% ^
+	-D ZLIB_LIBRARY=%ZLIB_LIBRARY% ^
+	-G "Visual Studio 14 2015" ^
+	-Ax64 ^
+	%OPENEXR_ROOT_DIR%/openexr
+popd
+if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%

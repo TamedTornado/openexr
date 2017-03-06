@@ -21,3 +21,6 @@ missing
 .DS_Store
 *.project
 *.cproject
+openexr-compiler/
+ilmbase-compiler/
+built/
