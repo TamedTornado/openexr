@@ -14,6 +14,7 @@ cmake ^
 	-D CMAKE_INSTALL_PREFIX=%OPENEXR_INSTALL_DIR% ^
 	-D BUILD_SHARED_LIBS=OFF ^
 	-G "Visual Studio 14 2015" ^
+	-D STATIC_WINCRT=ON ^
 	-Ax64 ^
 	%OPENEXR_ROOT_DIR%/ilmbase
 popd
@@ -31,6 +32,7 @@ cmake ^
 	-D BUILD_SHARED_LIBS=OFF ^
 	-D ZLIB_ROOT=%ZLIB_ROOT% ^
 	-D ZLIB_LIBRARY=%ZLIB_LIBRARY% ^
+	-D STATIC_WINCRT=ON ^
 	-G "Visual Studio 14 2015" ^
 	-Ax64 ^
 	%OPENEXR_ROOT_DIR%/openexr

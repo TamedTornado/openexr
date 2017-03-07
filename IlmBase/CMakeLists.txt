@@ -31,6 +31,9 @@ OPTION (BUILD_SHARED_LIBS "Build Shared Libraries" ON)
 # Allow the developer to select if Dynamic or Static libraries are built
 OPTION (NAMESPACE_VERSIONING "Namespace Versioning" ON)
 
+OPTION ( STATIC_WINCRT "Use the staticly linked Windows CRT (/MT or /MTd)" OFF )
+
+
 # Setup osx rpathing
 SET (CMAKE_MACOSX_RPATH 1)
 SET (BUILD_WITH_INSTALL_RPATH 1)
@@ -38,6 +41,30 @@ SET (BUILD_WITH_INSTALL_RPATH 1)
 IF ( NOT WIN32)
   ADD_DEFINITIONS ( -pthread )
 ENDIF ()
+
+if (WIN32)
+	# Are we using the static or dynamic RT library? Whatever we use, it needs to be the same in any dependencies
+	#  we pull in or we're potentially having mismatch issues.
+	IF(STATIC_WINCRT)
+		SET(WINCRT_NDEBUG "/MT")
+		SET(WINCRT_DEBUG "/MTd")
+		
+		SET(Boost_USE_STATIC_RUNTIME ON)
+		
+	ELSE()
+		SET(WINCRT_NDEBUG "/MD")
+		SET(WINCRT_DEBUG "/MDd")
+
+		SET(Boost_USE_STATIC_RUNTIME OFF)
+	ENDIF()
+
+	SET(CMAKE_CXX_FLAGS_DEBUG "/Od /RTCsu ${WINCRT_DEBUG}")
+	SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/Ox ${WINCRT_DEBUG}")
+	SET(CMAKE_CXX_FLAGS_RELEASE "/Ox ${WINCRT_NDEBUG}")
+	SET(CMAKE_CXX_FLAGS_MINSIZEREL "/Ox ${WINCRT_NDEBUG}")
+ENDIF()
+
+
 
 INCLUDE_DIRECTORIES ( Iex IexMath Imath Half ${CMAKE_CURRENT_BINARY_DIR}/config IlmThread IexTest ImathTest HalfTest )
 
